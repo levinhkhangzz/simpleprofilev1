@@ -16,25 +16,270 @@
     <meta name="description" content="In the quiet realm of a coder's life, the symphony of keystrokes orchestrates a world of innovation and endless possibilities.">
 </head>
 
-<body class="font-sans antialiased" data-sveltekit-preload-data="hover">
-    <div style="display: contents">
-        <main>
-            <div class="w-full pt-[20vh] pb-16">
-                <div class="w-full px-4 max-w-md mx-auto text-center"><img src="lars.jpg" alt="Le Vinh Khang" width="150" height="150" class="mask-squircle mx-auto block mb-0 fade-in">
-                    <h1 class="font-semibold text-2xl mb-1 text-slate-900 fade-in" data-svelte-h="svelte-1fgafxd">Le Vinh Khang</h1>
-                    <h2 class="font-medium text-slate-500 mb-10 fade-in" data-svelte-h="svelte-1938ka2">Web Developer</h2>
-                    <p class="font-medium mb-10 text-slate-800 text-lg fade-in" data-svelte-h="svelte-1repazr">In the quiet realm of a coder's life, the symphony of keystrokes orchestrates a world of innovation and endless possibilities.</p>
-                    <ul class="flex font-medium text-slate-500 justify-center gap-6 fade-in" data-svelte-h="svelte-jzbd4d">
-                        <li><a href="https://twitter.com/aedotris" class="hover:underline underline-offset-4">X</a></li>
-                        <li><a href="https://www.facebook.com/profile.php?id=199717642" class="hover:underline underline-offset-4">Facebook</a></li>
-                        <li><a href="https://instagram.com/williamcachamwri" class="hover:underline underline-offset-4">Instagram</a></li>
-                        <li><a href="https://github.com/levinhkhangzz" class="hover:underline underline-offset-4">Github</a></li>
-                    </ul>
-                </div>
-            </div>
-        </main>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+        transition: background-color 0.5s ease, color 0.5s ease, opacity 0.8s ease-in;
+    }
+
+	
+    body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; 
+    transition: opacity 0.5s ease-in;
+	background-color: #ffffff;
+}
+
+body.loaded {
+    opacity: 1;
+    transition: opacity 0.5s ease-in, background-color 0.5s ease; 
+}
+body.dark-mode {
+    background-color: #000000; 
+}
+
+    .ms {
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        -webkit-mask-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjAwJyBoZWlnaHQ9JzIwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cGF0aCBkPSdNMTAwIDBDMjAgMCAwIDIwIDAgMTAwczIwIDEwMCAxMDAgMTAwIDEwMC0yMCAxMDAtMTAwUzE4MCAwIDEwMCAwWicvPjwvc3ZnPg==);
+        mask-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjAwJyBoZWlnaHQ9JzIwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cGF0aCBkPSdNMTAwIDBDMjAgMCAwIDIwIDAgMTAwczIwIDEwMCAxMDAgMTAwIDEwMC0yMCAxMDAtMTAwUzE4MCAwIDEwMCAwWicvPjwvc3ZnPg==)
+    }
+
+    .fl {
+        display: flex;
+    }
+
+    .fw {
+        width: 100%;
+    }
+
+    .p-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .p-16 {
+        padding-bottom: 4rem;
+    }
+
+    
+    .mw-md {
+        max-width: 28rem;
+        margin: 0 auto; /* Center the container */
+    }
+
+    .tc {
+        text-align: center;
+    }
+
+    .t-2xl {
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+
+    .t-3xl {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+    }
+
+    .t-lg {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+    }
+
+    .fb {
+        font-weight: 700;
+    }
+
+    .fm {
+        font-weight: 500;
+    }
+
+    .fsb {
+        font-weight: 600;
+    }
+
+    .s5 {
+        --tw-text-opacity: 1;
+        color: rgb(100 116 139 / var(--tw-text-opacity));
+    }
+
+    .s8 {
+        --tw-text-opacity: 1;
+        color: rgb(30 41 59 / var(--tw-text-opacity));
+    }
+
+    .s9 {
+        --tw-text-opacity: 1;
+        color: rgb(15 23 42 / var(--tw-text-opacity));
+    }
+
+    .hover:underline {
+        text-decoration: underline;
+    }
+
+    .underline-offset-4 {
+        text-underline-offset: 0.25rem;
+    }
+
+    .dark-mode {
+        background-color: #000000;
+        color: #cbd5e0;
+    }
+
+	.toggle-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #4a5568;
+    transition: transform 0.3s ease;
+    z-index: 1;
+    display: flex; /* Sử dụng flex để căn giữa biểu tượng và hình vuông */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.toggle-btn::before {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #4a5568;
+    border-radius: 4px;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.toggle-btn:hover::before {
+    opacity: 1;
+}
+
+.toggle-btn:active {
+    transform: scale(1.1);
+}
+
+.toggle-btn:active::before {
+    opacity: 0;
+}
+
+.dark-mode .toggle-btn {
+    color: #cbd5e0;
+}
+
+.dark-mode .toggle-btn::before {
+    border-color: #cbd5e0;
+}
+
+	.dark-mode .s9 {
+    --tw-text-opacity: 1;
+    color: #ffffff; 
+	transition: color 0.5s ease;
+}
+
+.dark-mode .s5 {
+    --tw-text-opacity: 1;
+    color: #cbd5e0; 
+	transition: color 0.5s ease;
+}
+
+.dark-mode .s8 {
+    --tw-text-opacity: 1;
+    color: #cbd5e0; 
+	transition: color 0.5s ease;
+}
+    .social-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        gap: 13px;
+    }
+
+    .social-links li {
+        display: inline;
+        position: relative;
+    }
+
+    .social-links li a {
+        position: relative;
+        color: #4a5568;
+        text-decoration: none;
+        overflow: hidden;
+    }
+
+    .social-links li a::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: #4a5568;
+        bottom: 0;
+        left: 0;
+        transform: scaleX(0);
+        transform-origin: bottom right;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .social-links li a:hover::before {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    h1, h2, p {
+    margin-top: -8px; /* Điều chỉnh giá trị theo ý muốn của bạn */
+    transform: translateY(-20px)
+}
+
+
+</style>
+
+<body class="fs antialiased" data-sveltekit-preload-data="hover">
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
+    <div class="fw p-16">
+        <div class="fw p-4 mw-md tc">
+            <img src="lars.jpg" alt="Lars Graubner" width="150" height="150" class="ms mx-auto block mb-8">
+            <h1 class="fb t-2xl mb-1 s9" data-svelte-h="svelte-krlu0o">Le Vinh Khang</h1>
+            <h2 class="fm s5 mb-10" data-svelte-h="svelte-1b3h02s">Web Developer</h2>
+            <p class="fm mb-10 s8 t-lg" data-svelte-h="svelte-ln22k5">In the quiet realm of a coder's life, the symphony of keystrokes orchestrates a world of innovation and endless possibilities.</p>
+            <ul class="fl fm s5 jc social-links" data-svelte-h="svelte-1f7u824">
+                <li><a href="https://twitter.com/larsgraubner" class="hover:underline underline-offset-4">X</a></li>
+                <li><a href="https://www.linkedin.com/in/larsgraubner/" class="hover:underline underline-offset-4">Instagram</a></li>
+                <li><a href="https://www.xing.com/profile/Lars_Graubner2/cv" class="hover:underline underline-offset-4">Facebook</a></li>
+                <li><a href="https://github.com/lgraubner" class="hover:underline underline-offset-4">Github</a></li>
+            </ul>
+        </div>
     </div>
 
+	<script>
+		function toggleDarkMode() {
+			var body = document.body;
+			var isDarkMode = body.classList.toggle('dark-mode');
+			var toggleBtn = document.querySelector('.toggle-btn');
+	
+			toggleBtn.textContent = isDarkMode ? '🌞' : '🌙';
+		}
+	</script>
+	<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.body.classList.add('loaded');
+    });
+</script>
 
 </body>
 
