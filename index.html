@@ -275,14 +275,8 @@ body.dark-mode {
     <div id="battery-status" class="battery-status">
         Battery: <span id="battery-icon">🔋</span> <span id="battery-percentage">--</span>%
     </div>
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function () {
-            initBatteryStatus();
-            initDarkModeToggle();
-            document.body.classList.add('loaded');
-        });
-    
-        function initBatteryStatus() {
             navigator.getBattery().then(function (battery) {
                 updateBatteryStatus(battery);
     
@@ -311,22 +305,25 @@ body.dark-mode {
                     batteryIcon.innerText = '🔋🔋🔋🔋🔋';
                 }
             }
-        }
-    
-        function initDarkModeToggle() {
-            var toggleBtn = document.querySelector('.toggle-btn');
-    
-            toggleBtn.addEventListener('click', function () {
-                toggleDarkMode();
-            });
-    
-            function toggleDarkMode() {
-                var body = document.body;
-                var isDarkMode = body.classList.toggle('dark-mode');
-                toggleBtn.textContent = isDarkMode ? '🌞' : '🌙';
-            }
-        }
+        });
     </script>
+    
+    
+	<script>
+		function toggleDarkMode() {
+			var body = document.body;
+			var isDarkMode = body.classList.toggle('dark-mode');
+			var toggleBtn = document.querySelector('.toggle-btn');
+	
+			toggleBtn.textContent = isDarkMode ? '🌞' : '🌙';
+		}
+	</script>
+	<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.body.classList.add('loaded');
+    });
+</script>
+
     
     
 </body>
