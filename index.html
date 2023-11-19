@@ -7,7 +7,7 @@
 
     <link rel="icon" href="https://levinhkhang.org/favicon.ico" sizes="32x32">
     <link rel="apple-touch-icon" href="https://levinhkhang.org/apple-touch-icon.png">
-    <link rel="manifest" href="https://levinhkhang.org/manifest.webmanifest">
+    <link rel="manifest" href="manifest.webmanifest">
 
     <meta name="viewport" content="width=device-width">
 
@@ -246,14 +246,51 @@ body.dark-mode {
     transform: translateY(-20px)
 }
 .battery-status {
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    color: #4a5568;
-    font-size: 20px; /* Điều chỉnh kích thước font cho biểu tượng */
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        transition: color 0.5s ease, color 0.5s ease, opacity 0.8s ease-in;
+        font-size: 20px;
+        color: #4a5568; /* Màu mặc định cho chữ Battery */
+    }
+
+    /* Thêm CSS cho chế độ Dark Mode */
+    .dark-mode .battery-status {
+        color: #ffffff; /* Màu trắng khi chế độ Dark Mode được bật */
+    }
+
+
+    .notification {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  padding: 15px;
+  background-color: red;
+  border-radius: 5px;
+  display: none;
+  color: white;
+  animation: slide-up 0.5s ease-out;
 }
 
+.notification.connected {
+  transform: translateY(0);
+  transition: transform 0.3s ease-out;
+}
 
+.retry-button {
+  color: #2196F3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
 </style>
 
 <body class="fs antialiased" data-sveltekit-preload-data="hover">
@@ -275,6 +312,66 @@ body.dark-mode {
     <div id="battery-status" class="battery-status">
         Battery: <span id="battery-icon">🔋</span> <span id="battery-percentage">--</span>%
     </div>
+    <div id="connection-notification" class="notification">
+        Không có kết nối internet. 
+      </div>
+      <script>
+function retryConnection() {
+  checkInternetConnection();
+}
+
+function showNotification() {
+  var notification = document.getElementById('connection-notification');
+  notification.style.display = 'block';
+  setTimeout(function () {
+    notification.classList.remove('connected', 'connected-notification');
+  }, 10);
+}
+
+function hideNotification() {
+  var notification = document.getElementById('connection-notification');
+  notification.classList.add('connected', 'connected-notification');
+  setTimeout(function () {
+    notification.style.transform = 'translateY(100%)'; // Slide up
+    setTimeout(function () {
+      notification.style.display = 'none';
+      notification.style.transform = 'translateY(0)'; // Reset transform
+      setTimeout(function () {
+        notification.classList.remove('connected-notification');
+      }, 3000); // 3-second delay before sliding down again
+    }, 300); // Transition duration
+  }, 300); // Delay before starting the transition
+}
+
+function checkInternetConnection() {
+  fetch('https://www.example.com')
+    .then(function (response) {
+      if (response.ok) {
+        hideNotification();
+      } else {
+        showNotification();
+      }
+    })
+    .catch(function () {
+      showNotification();
+    });
+}
+
+// Check connection when the page loads
+document.addEventListener('DOMContentLoaded', function () {
+  if (!navigator.onLine) {
+    showNotification();
+  }
+
+  window.addEventListener('online', function () {
+    hideNotification();
+  });
+
+  window.addEventListener('offline', function () {
+    showNotification();
+  });
+});
+    </script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         setInterval(function () {
@@ -282,6 +379,8 @@ body.dark-mode {
                 navigator.getBattery().then(function (battery) {
                     if (battery.level !== undefined) {
                         updateBatteryStatus(battery);
+                    } else {
+                        checkChargingStatus(battery);
                     }
                 });
             } else if ('battery' in navigator) {
@@ -294,13 +393,15 @@ body.dark-mode {
             var batteryPercentage = Math.round(battery.level * 100);
             var isCharging = battery.charging;
 
-            if (batteryPercentage !== undefined) {
-                document.getElementById('battery-percentage').innerText = batteryPercentage;
-                updateBatteryIcon(batteryPercentage, isCharging);
-            } else {
-                document.getElementById('battery-percentage').innerText = '--';
-                checkChargingStatus(isCharging);
-            }
+            document.getElementById('battery-percentage').innerText = batteryPercentage;
+            updateBatteryIcon(batteryPercentage, isCharging);
+        }
+
+        function checkChargingStatus(battery) {
+            var isCharging = battery.charging;
+
+            document.getElementById('battery-percentage').innerText = '--';
+            updateBatteryIcon(null, isCharging);
         }
 
         function updateBatteryIcon(percentage, isCharging) {
@@ -308,26 +409,21 @@ body.dark-mode {
             if (isCharging) {
                 batteryIcon.innerText = '⚡';
             } else {
-                if (percentage >= 80) {
-                    batteryIcon.innerText = '🔋';
-                } else if (percentage >= 60) {
-                    batteryIcon.innerText = '🔋🔋';
-                } else if (percentage >= 40) {
-                    batteryIcon.innerText = '🔋🔋🔋';
-                } else if (percentage >= 20) {
-                    batteryIcon.innerText = '🔋🔋🔋🔋';
+                if (percentage !== null) {
+                    if (percentage >= 80) {
+                        batteryIcon.innerText = '🔋';
+                    } else if (percentage >= 60) {
+                        batteryIcon.innerText = '🔋🔋';
+                    } else if (percentage >= 40) {
+                        batteryIcon.innerText = '🔋🔋🔋';
+                    } else if (percentage >= 20) {
+                        batteryIcon.innerText = '🔋🔋🔋🔋';
+                    } else {
+                        batteryIcon.innerText = '🔋🔋🔋🔋🔋';
+                    }
                 } else {
-                    batteryIcon.innerText = '🔋🔋🔋🔋🔋';
+                    batteryIcon.innerText = '🔋';
                 }
-            }
-        }
-
-        function checkChargingStatus(isCharging) {
-            var batteryIcon = document.getElementById('battery-icon');
-            if (isCharging) {
-                batteryIcon.innerText = '⚡';
-            } else {
-                batteryIcon.innerText = '🔌';
             }
         }
     });
@@ -348,7 +444,6 @@ body.dark-mode {
         document.body.classList.add('loaded');
     });
 </script>
-
 </body>
 
 </html>
