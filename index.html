@@ -277,38 +277,38 @@ body.dark-mode {
     </div>
 <script>
         document.addEventListener('DOMContentLoaded', function () {
-    function updateBatteryStatus() {
-        navigator.getBattery().then(function (battery) {
-            var batteryPercentage = Math.round(battery.level * 100);
-            document.getElementById('battery-percentage').innerText = batteryPercentage;
-            updateBatteryIcon(batteryPercentage);
+            // Kiểm tra xem trình duyệt có hỗ trợ API navigator.getBattery() không
+            if ('getBattery' in navigator) {
+                setInterval(function () {
+                    navigator.getBattery().then(function (battery) {
+                        updateBatteryStatus(battery);
+                    });
+                }, 100); // Cập nhật mỗi 0.1 giây
+            } else {
+                console.log('Trình duyệt không hỗ trợ API navigator.getBattery().');
+            }
+
+            function updateBatteryStatus(battery) {
+                var batteryPercentage = Math.round(battery.level * 100);
+                document.getElementById('battery-percentage').innerText = batteryPercentage;
+                updateBatteryIcon(batteryPercentage);
+            }
+
+            function updateBatteryIcon(percentage) {
+                var batteryIcon = document.getElementById('battery-icon');
+                if (percentage >= 80) {
+                    batteryIcon.innerText = '🔋';
+                } else if (percentage >= 60) {
+                    batteryIcon.innerText = '🔋🔋';
+                } else if (percentage >= 40) {
+                    batteryIcon.innerText = '🔋🔋🔋';
+                } else if (percentage >= 20) {
+                    batteryIcon.innerText = '🔋🔋🔋🔋';
+                } else {
+                    batteryIcon.innerText = '🔋🔋🔋🔋🔋';
+                }
+            }
         });
-    }
-
-    function updateBatteryIcon(percentage) {
-        var batteryIcon = document.getElementById('battery-icon');
-        if (percentage >= 80) {
-            batteryIcon.innerText = '🔋';
-        } else if (percentage >= 60) {
-            batteryIcon.innerText = '🔋🔋';
-        } else if (percentage >= 40) {
-            batteryIcon.innerText = '🔋🔋🔋';
-        } else if (percentage >= 20) {
-            batteryIcon.innerText = '🔋🔋🔋🔋';
-        } else {
-            batteryIcon.innerText = '🔋🔋🔋🔋🔋';
-        }
-    }
-
-    // Khi trang web tải, cập nhật trạng thái pin và thêm sự kiện để theo dõi thay đổi
-    updateBatteryStatus();
-    navigator.getBattery().then(function (battery) {
-        battery.addEventListener('levelchange', updateBatteryStatus);
-    });
-
-    // Cập nhật sau mỗi 0.1 giây
-    setInterval(updateBatteryStatus, 100);
-});
     </script>
     
     
