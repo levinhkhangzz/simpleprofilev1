@@ -276,49 +276,61 @@ body.dark-mode {
         Battery: <span id="battery-icon">🔋</span> <span id="battery-percentage">--</span>%
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            setInterval(function () {
-                if ('getBattery' in navigator) {
-                    navigator.getBattery().then(function (battery) {
-                        if (battery.level !== undefined) {
-                            updateBatteryStatus(battery);
-                        }
-                    });
-                } else if ('battery' in navigator) {
-                    var battery = navigator.battery;
-                    updateBatteryStatus(battery);
-                } else {
-                    alert('Trình duyệt không hỗ trợ API navigator.getBattery hoặc navigator.battery. Thử lại trên trình duyệt khác.');
-                }
-            }, 100);
-    
-            function updateBatteryStatus(battery) {
-                var batteryPercentage = Math.round(battery.level * 100);
-                var isCharging = battery.charging;
-    
+    document.addEventListener('DOMContentLoaded', function () {
+        setInterval(function () {
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(function (battery) {
+                    if (battery.level !== undefined) {
+                        updateBatteryStatus(battery);
+                    }
+                });
+            } else if ('battery' in navigator) {
+                var battery = navigator.battery;
+                updateBatteryStatus(battery);
+            }
+        }, 100);
+
+        function updateBatteryStatus(battery) {
+            var batteryPercentage = Math.round(battery.level * 100);
+            var isCharging = battery.charging;
+
+            if (batteryPercentage !== undefined) {
                 document.getElementById('battery-percentage').innerText = batteryPercentage;
                 updateBatteryIcon(batteryPercentage, isCharging);
+            } else {
+                document.getElementById('battery-percentage').innerText = '--';
+                checkChargingStatus(isCharging);
             }
-    
-            function updateBatteryIcon(percentage, isCharging) {
-                var batteryIcon = document.getElementById('battery-icon');
-                if (isCharging) {
-                    batteryIcon.innerText = '⚡';
+        }
+
+        function updateBatteryIcon(percentage, isCharging) {
+            var batteryIcon = document.getElementById('battery-icon');
+            if (isCharging) {
+                batteryIcon.innerText = '⚡';
+            } else {
+                if (percentage >= 80) {
+                    batteryIcon.innerText = '🔋';
+                } else if (percentage >= 60) {
+                    batteryIcon.innerText = '🔋🔋';
+                } else if (percentage >= 40) {
+                    batteryIcon.innerText = '🔋🔋🔋';
+                } else if (percentage >= 20) {
+                    batteryIcon.innerText = '🔋🔋🔋🔋';
                 } else {
-                    if (percentage >= 80) {
-                        batteryIcon.innerText = '🔋';
-                    } else if (percentage >= 60) {
-                        batteryIcon.innerText = '🔋🔋';
-                    } else if (percentage >= 40) {
-                        batteryIcon.innerText = '🔋🔋🔋';
-                    } else if (percentage >= 20) {
-                        batteryIcon.innerText = '🔋🔋🔋🔋';
-                    } else {
-                        batteryIcon.innerText = '🔋🔋🔋🔋🔋';
-                    }
+                    batteryIcon.innerText = '🔋🔋🔋🔋🔋';
                 }
             }
-        });
+        }
+
+        function checkChargingStatus(isCharging) {
+            var batteryIcon = document.getElementById('battery-icon');
+            if (isCharging) {
+                batteryIcon.innerText = '⚡';
+            } else {
+                batteryIcon.innerText = '🔌';
+            }
+        }
+    });
     </script>
     
     
