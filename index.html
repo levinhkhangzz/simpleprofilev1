@@ -276,17 +276,27 @@ body.dark-mode {
         Battery: <span id="battery-icon">🔋</span> <span id="battery-percentage">--</span>%
     </div>
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        // Kiểm tra xem trình duyệt có hỗ trợ API navigator.getBattery() không
-        if ('getBattery' in navigator) {
+    document.addEventListener('DOMContentLoaded', function () {
+        // Kiểm tra nếu trình duyệt là Safari (cho iPhone)
+        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+        if (navigator.getBattery && !isSafari) {
             setInterval(function () {
                 navigator.getBattery().then(function (battery) {
                     updateBatteryStatus(battery);
                 });
             }, 100); // Cập nhật mỗi 0.1 giây
         } else {
-            // Nếu trình duyệt không hỗ trợ, hiển thị thông báo cảnh báo
-            alert('Trình duyệt của bạn không hỗ trợ API navigator.getBattery().');
+            // Nếu không hỗ trợ API hoặc là Safari, sử dụng sự kiện battery-status trên iPhone
+            window.addEventListener('battery-status', function (event) {
+                var battery = event.target;
+                updateBatteryStatus(battery);
+            });
+
+            // Kiểm tra nếu trình duyệt là Safari và hiển thị thông báo cảnh báo
+            if (isSafari) {
+                alert('Trình duyệt Safari không hỗ trợ API navigator.getBattery, sử dụng sự kiện battery-status thay thế.');
+            }
         }
 
         function updateBatteryStatus(battery) {
@@ -310,7 +320,7 @@ body.dark-mode {
             }
         }
     });
-    </script>
+</script>
     
     
 	<script>
