@@ -154,8 +154,8 @@ body.dark-mode {
 .toggle-btn::before {
     content: "";
     position: absolute;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border: 2px solid #4a5568;
     border-radius: 4px;
     top: 50%;
@@ -245,6 +245,13 @@ body.dark-mode {
     margin-top: -8px; 
     transform: translateY(-20px)
 }
+.battery-status {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    color: #4a5568;
+    font-size: 20px; /* Điều chỉnh kích thước font cho biểu tượng */
+}
 
 
 </style>
@@ -265,7 +272,43 @@ body.dark-mode {
             </ul>
         </div>
     </div>
-
+    <div id="battery-status" class="battery-status">
+        Battery: <span id="battery-icon">🔋</span> <span id="battery-percentage">--</span>%
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            navigator.getBattery().then(function (battery) {
+                updateBatteryStatus(battery);
+    
+                battery.addEventListener('levelchange', function () {
+                    updateBatteryStatus(battery);
+                });
+            });
+    
+            function updateBatteryStatus(battery) {
+                var batteryPercentage = Math.round(battery.level * 100);
+                document.getElementById('battery-percentage').innerText = batteryPercentage;
+                updateBatteryIcon(batteryPercentage);
+            }
+    
+            function updateBatteryIcon(percentage) {
+                var batteryIcon = document.getElementById('battery-icon');
+                if (percentage >= 80) {
+                    batteryIcon.innerText = '🔋';
+                } else if (percentage >= 60) {
+                    batteryIcon.innerText = '🔋🔋';
+                } else if (percentage >= 40) {
+                    batteryIcon.innerText = '🔋🔋🔋';
+                } else if (percentage >= 20) {
+                    batteryIcon.innerText = '🔋🔋🔋🔋';
+                } else {
+                    batteryIcon.innerText = '🔋🔋🔋🔋🔋';
+                }
+            }
+        });
+    </script>
+    
+    
 	<script>
 		function toggleDarkMode() {
 			var body = document.body;
