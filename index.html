@@ -375,11 +375,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <script>
 document.addEventListener('DOMContentLoaded', function () {
     setInterval(function () {
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then(function (battery) {
-                updateBatteryStatus(battery);
-            });
-        } else if ('onbattery' in navigator || 'charging' in navigator) {
+        if ('onbattery' in navigator || 'charging' in navigator) {
             // Fallback for browsers that don't support getBattery
             var isCharging = 'charging' in navigator && navigator.charging;
             var battery = 'onbattery' in navigator ? { level: 1, charging: false } : null;
@@ -426,7 +422,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
-
     </script>
     
     
