@@ -373,60 +373,60 @@ document.addEventListener('DOMContentLoaded', function () {
 });
     </script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        setInterval(function () {
-            if ('getBattery' in navigator) {
-                navigator.getBattery().then(function (battery) {
-                    if (battery.level !== undefined) {
-                        updateBatteryStatus(battery);
-                    } else {
-                        checkChargingStatus(battery);
-                    }
-                });
-            } else if ('battery' in navigator) {
-                var battery = navigator.battery;
-                updateBatteryStatus(battery);
-            }
-        }, 100);
+document.addEventListener('DOMContentLoaded', function () {
+    setInterval(function () {
+        if ('battery' in navigator) {
+            var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
 
-        function updateBatteryStatus(battery) {
-            var batteryPercentage = Math.round(battery.level * 100);
-            var isCharging = battery.charging;
-
-            document.getElementById('battery-percentage').innerText = batteryPercentage;
-            updateBatteryIcon(batteryPercentage, isCharging);
-        }
-
-        function checkChargingStatus(battery) {
-            var isCharging = battery.charging;
-
-            document.getElementById('battery-percentage').innerText = '--';
-            updateBatteryIcon(null, isCharging);
-        }
-
-        function updateBatteryIcon(percentage, isCharging) {
-            var batteryIcon = document.getElementById('battery-icon');
-            if (isCharging) {
-                batteryIcon.innerText = '⚡';
-            } else {
-                if (percentage !== null) {
-                    if (percentage >= 80) {
-                        batteryIcon.innerText = '🔋';
-                    } else if (percentage >= 60) {
-                        batteryIcon.innerText = '🔋🔋';
-                    } else if (percentage >= 40) {
-                        batteryIcon.innerText = '🔋🔋🔋';
-                    } else if (percentage >= 20) {
-                        batteryIcon.innerText = '🔋🔋🔋🔋';
-                    } else {
-                        batteryIcon.innerText = '🔋🔋🔋🔋🔋';
-                    }
+            if (battery) {
+                if (battery.level !== undefined) {
+                    updateBatteryStatus(battery);
                 } else {
-                    batteryIcon.innerText = '🔋';
+                    checkChargingStatus(battery);
                 }
             }
         }
-    });
+    }, 100);
+
+    function updateBatteryStatus(battery) {
+        var batteryPercentage = Math.round(battery.level * 100);
+        var isCharging = battery.charging;
+
+        document.getElementById('battery-percentage').innerText = batteryPercentage;
+        updateBatteryIcon(batteryPercentage, isCharging);
+    }
+
+    function checkChargingStatus(battery) {
+        var isCharging = battery.charging;
+
+        document.getElementById('battery-percentage').innerText = '--';
+        updateBatteryIcon(null, isCharging);
+    }
+
+    function updateBatteryIcon(percentage, isCharging) {
+        var batteryIcon = document.getElementById('battery-icon');
+        if (isCharging) {
+            batteryIcon.innerText = '⚡';
+        } else {
+            if (percentage !== null) {
+                if (percentage >= 80) {
+                    batteryIcon.innerText = '🔋';
+                } else if (percentage >= 60) {
+                    batteryIcon.innerText = '🔋🔋';
+                } else if (percentage >= 40) {
+                    batteryIcon.innerText = '🔋🔋🔋';
+                } else if (percentage >= 20) {
+                    batteryIcon.innerText = '🔋🔋🔋🔋';
+                } else {
+                    batteryIcon.innerText = '🔋🔋🔋🔋🔋';
+                }
+            } else {
+                batteryIcon.innerText = '🔋';
+            }
+        }
+    }
+});
+
     </script>
     
     
