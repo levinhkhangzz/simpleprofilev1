@@ -375,36 +375,36 @@ document.addEventListener('DOMContentLoaded', function () {
     <script>
 document.addEventListener('DOMContentLoaded', function () {
     setInterval(function () {
-        if ('battery' in navigator) {
-            var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(function (battery) {
+                updateBatteryStatus(battery);
+            });
+        } else if ('onbattery' in navigator || 'charging' in navigator) {
+            // Fallback for browsers that don't support getBattery
+            var isCharging = 'charging' in navigator && navigator.charging;
+            var battery = 'onbattery' in navigator ? { level: 1, charging: false } : null;
 
-            if (battery) {
-                if (battery.level !== undefined) {
-                    updateBatteryStatus(battery);
-                } else {
-                    checkChargingStatus(battery);
-                }
-            }
+            updateBatteryStatus(battery, isCharging);
         }
-    }, 100);
+    }, 1000);
 
-    function updateBatteryStatus(battery) {
-        var batteryPercentage = Math.round(battery.level * 100);
-        var isCharging = battery.charging;
+    function updateBatteryStatus(battery, isCharging) {
+        var batteryIcon = document.getElementById('battery-icon');
+        var batteryPercentageElement = document.getElementById('battery-percentage');
 
-        document.getElementById('battery-percentage').innerText = batteryPercentage;
-        updateBatteryIcon(batteryPercentage, isCharging);
-    }
-
-    function checkChargingStatus(battery) {
-        var isCharging = battery.charging;
-
-        document.getElementById('battery-percentage').innerText = '--';
-        updateBatteryIcon(null, isCharging);
+        if (battery) {
+            var batteryPercentage = Math.round(battery.level * 100);
+            batteryPercentageElement.innerText = batteryPercentage;
+            updateBatteryIcon(batteryPercentage, isCharging);
+        } else {
+            batteryPercentageElement.innerText = '--';
+            updateBatteryIcon(null, isCharging);
+        }
     }
 
     function updateBatteryIcon(percentage, isCharging) {
         var batteryIcon = document.getElementById('battery-icon');
+
         if (isCharging) {
             batteryIcon.innerText = '⚡';
         } else {
